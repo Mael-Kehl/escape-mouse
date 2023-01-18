@@ -5,9 +5,9 @@ Created for a [Polytech Nancy](https://polytech-nancy.univ-lorraine.fr/) project
 
 ## Devs : 
 
-Maël KEHL 
-Gabin PRAS
-Paul BOSTOEN
+@Maël KEHL 
+@Gabin PRAS
+@Paul BOSTOEN
 
 ## Tutor : 
 
