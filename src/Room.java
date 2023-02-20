@@ -1,3 +1,7 @@
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * Class Room - a room in an adventure game.
  *
@@ -14,11 +18,9 @@
  */
 public class Room 
 {
-    public String description;
-    public Room northExit;
-    public Room southExit;
-    public Room eastExit;
-    public Room westExit;
+    private String description;
+    private HashMap<String, Room> exits;
+    private Vector<Item> items; 
 
     /**
      * Create a room described "description". Initially, it has
@@ -29,30 +31,76 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
+        exits = new HashMap<>();
+        items = new Vector<Item>();
     }
 
     /**
      * Define the exits of this room.  Every direction either leads
      * to another room or is null (no exit there).
-     * @param north The north exit.
-     * @param east The east east.
-     * @param south The south exit.
-     * @param west The west exit.
+     * @param direction direction where you want to set an exit
+     * @param neighbor exit you want to set in the direction specified
      */
-    public void setExits(Room north, Room east, Room south, Room west) 
+    public void setExits(String direction, Room neighbor) 
     {
-        if(north != null) {
-            northExit = north;
+        exits.put(direction, neighbor);
+    }
+
+    /**
+     * Returns the exit in one direction
+     * @param direction direction in the possible exit is
+     * @return Room or null
+     */
+    public Room getExit(String direction){
+        return exits.get(direction);
+    }
+
+    /**
+     * Adds an item to the room
+     * @param item 
+     */
+    public void addItem(Item item){
+        this.items.add(item);
+    }
+
+    /**
+     * Returns the description of an item in the room
+     * @param name name of the item
+     * @return Description of the item
+     */
+    public String getItemDescription(String name) {
+        for (Item item : items) {
+            if (item.getName().equals(name)) return item.getDescription();
         }
-        if(east != null) {
-            eastExit = east;
+        return new String("Item not found");
+    }
+
+    /**
+     * Returns a list of all items in a room
+     * @return String of items
+     */
+    public String getItemList() {
+        String itemList = "";
+
+        for (Item item: items){
+            itemList += item.getName() + " ";
         }
-        if(south != null) {
-            southExit = south;
+        return itemList;
+    }
+
+    /**
+     * Return a description of the room’s exits,
+     * for example, "Exits: north west".
+     * @return A description of the available exits.
+     */
+    public String getExitString(){
+
+        String returnString = "Exits : ";
+        Set<String> keys = exits.keySet();
+        for(String exit: keys) {
+            returnString += " " + exit;
         }
-        if(west != null) {
-            westExit = west;
-        }
+        return returnString;
     }
 
     /**
@@ -61,6 +109,17 @@ public class Room
     public String getDescription()
     {
         return description;
+    }
+
+    /**
+     * Return a long description of this room, of the form:
+     * You are in the kitchen.
+     * Exits: north west
+     * @return A description of the room, including exits.
+     */
+    public String getLongDescription()
+    {
+    return "You are in " + description + ".\n" + getExitString();
     }
 
 }
