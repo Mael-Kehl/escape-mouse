@@ -57,10 +57,18 @@ public class Room
 
     /**
      * Adds an item to the room
-     * @param item 
+     * @param item to add 
      */
     public void addItem(Item item){
         this.items.add(item);
+    }
+
+    /**
+     * Removes an item from the room
+     * @param item item to remove
+     */
+    public void removeItem(Item item) {
+        this.items.remove(item);
     }
 
     /**
@@ -86,6 +94,20 @@ public class Room
             itemList += item.getName() + " ";
         }
         return itemList;
+    }
+
+    /**
+     * Returns an item in a room from its name
+     * @param name String 
+     * @return Item
+     */
+    public Item getItemByName(String name){
+        for (Item item: items) {
+            if (item.getName().equals(name)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     /**

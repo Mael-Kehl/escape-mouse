@@ -1,3 +1,4 @@
+import java.util.Stack;
 import java.util.Vector;
 
 /**
@@ -20,13 +21,14 @@ import java.util.Vector;
 public class Game 
 {
     private Parser parser;
-    private Room currentRoom;
+    private Player player;
         
     /**
      * Create the game and initialise its internal map.
      */
     public Game() 
     {
+        player = new Player();
         createRooms();
         parser = new Parser();
     }
@@ -54,19 +56,21 @@ public class Game
         parentalBedRoom.setExits("east", kitchen);
         catRoom.setExits("south", parentalBedRoom);
 
-        currentRoom = attic;  // start game outside
+        player.setCurrentRoom(attic);  // start game outside
 
         //Creation of all items 
-        Item shelves, shoes, tires, bed, catTree, fridge;
+        Item shelves, shoes, tires, bed, catTree, fridge, cheese;
 
-        shelves = new Item("shelves", "Shelves where shoes are stored");
-        shoes = new Item("shoes", "Pair of old air jordan red/white");
-        tires = new Item("tires", "Brand new Tires for a Mustang");
-        bed = new Item("bed", "Bed with two places");
-        catTree = new Item("cat tree", "Giant cat tree in beige color");
-        fridge = new Item("fridge", "Fridge containing a lot of cheese");
+        shelves = new Item("shelves", "Shelves where shoes are stored", 20000);
+        shoes = new Item("shoes", "Pair of old air jordan red/white", 500);
+        tires = new Item("tires", "Brand new Tires for a Mustang", 5000);
+        bed = new Item("bed", "Bed with two places", 10000);
+        catTree = new Item("cat tree", "Giant cat tree in beige color", 6000);
+        fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
+        cheese = new Item("cheese", "Piece of cheese that you can eat to heal", 200);
 
         attic.addItem(shelves);
+        attic.addItem(cheese);
         laundryRoom.addItem(shoes);
         cellar.addItem(tires);
         parentalBedRoom.addItem(bed);
@@ -126,17 +130,27 @@ public class Game
         else if (commandWord.equals("go")) {
             goRoom(command);
         }
+        else if (commandWord.equals("back")) {
+            goBack();
+        }
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
         }
         else if (commandWord.equals("look")) {
             look();
+            showRoomItems();
         }
         else if (commandWord.equals("eat")){
             eat();
         }
         else if (commandWord.equals("items")) {
-            items();
+            showPlayerItems();
+        }
+        else if (commandWord.equals("take")) {
+            pickItem(command);
+        }
+        else if (commandWord.equals("drop")) {
+            dropItem(command);
         }
         else if(commandWord.equals("inspect")) {
             inspectItem(command);
@@ -161,6 +175,10 @@ public class Game
         System.out.println(parser.getCommands());
     }
 
+    /**
+     * Prints description of an item in the room
+     * @param command command parsed in terminal, that has two fields including the name of the item
+     */
     private void inspectItem(Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
@@ -169,7 +187,42 @@ public class Game
         }
 
         String itemName = command.getSecondWord();
-        System.out.println(currentRoom.getItemDescription(itemName));
+        System.out.println(player.getCurrentRoom().getItemDescription(itemName));
+    }
+
+    /**
+     * Try to pick an item 
+     * @param command
+     */
+    private void pickItem(Command command){
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what item we should take
+            System.out.println("Which item do you want to take ?");
+            return;
+        }
+
+        //We first recover the item from its name
+        String itemName = command.getSecondWord();
+        Item itemToPick = player.getCurrentRoom().getItemByName(itemName);
+
+        if (itemToPick != null) {
+            player.pickUpItem(itemToPick);
+        }
+        else {
+            System.out.println("There is no object named " + itemName + " !");
+        }
+    }
+
+    private void dropItem(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what item we should drop
+            System.out.println("Which item do you want to drop ?");
+            return;
+        }
+        String itemName = command.getSecondWord();
+        Item itemToDrop = player.getItemByName(itemName);
+
+        if (itemToDrop != null ) player.dropItem(itemToDrop);
     }
 
     /** 
@@ -185,48 +238,78 @@ public class Game
         }
 
         String direction = command.getSecondWord();
-
+        Room current = player.getCurrentRoom();
         // Try to leave current room.
         Room nextRoom = null;
         if(direction.equals("north")) {
-            nextRoom = currentRoom.getExit("north");
+            nextRoom = current.getExit("north");
         }
         if(direction.equals("east")) {
-            nextRoom = currentRoom.getExit("east");
+            nextRoom = current.getExit("east");
         }
         if(direction.equals("south")) {
-            nextRoom = currentRoom.getExit("south");
+            nextRoom = current.getExit("south");
         }
         if(direction.equals("west")) {
-            nextRoom = currentRoom.getExit("west");
+            nextRoom = current.getExit("west");
         }
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
         else {
-            currentRoom = nextRoom;
+            //Every time we change room we push it to the previousRoom Stack
+            player.addPreviousRoom(current);
+            player.setCurrentRoom(nextRoom);
             printLocationInfo();
         }
     }
 
     /**
+     * Try to go on the previous room
+     * If not possible, there is an error message
+     */
+    private void goBack(){
+        //The last element of stack is the previous room
+        //When we're in we can pop it from the stack
+        if (!player.getAllPreviousRooms().isEmpty()) {
+            Room previous = player.getLastPreviousRoom();
+            player.setCurrentRoom(previous);
+            player.popPreviousRoom();
+            printLocationInfo();
+        }
+        else {
+            System.out.println("You cannot go back ! ");
+        }
+    }
+
+
+
+    /**
      * Try to look around current room to give informations
      */
     private void look() {
-        System.out.println(currentRoom.getLongDescription());
+        System.out.println(player.getCurrentRoom().getLongDescription());
     }
 
-    private void items() {
-        System.out.println(currentRoom.getItemList());
+    private void showRoomItems() {
+        System.out.print("Items : ");
+        System.out.println(player.getCurrentRoom().getItemList());
     }   
+
+    private void showPlayerItems() {
+        System.out.print("Inventory : ");
+        System.out.println(player.getItemsCarried());
+    }
 
     private void eat() {
         System.out.println("You've eaten cheese, you're now in good shape");
     }
 
     private void printLocationInfo(){
-        System.out.println(currentRoom.getLongDescription());
+        System.out.println(player.getCurrentRoom().getLongDescription());
+        
+        showRoomItems();
     }
 
     /** 
