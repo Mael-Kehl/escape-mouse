@@ -118,42 +118,43 @@ public class Game
     {
         boolean wantToQuit = false;
 
-        if(command.isUnknown()) {
-            System.out.println("I don't know what you mean...");
-            return false;
-        }
+        CommandWord commandWord = command.getCommandWord();
 
-        String commandWord = command.getCommandWord();
-        if (commandWord.equals("help")) {
-            printHelp();
-        }
-        else if (commandWord.equals("go")) {
-            goRoom(command);
-        }
-        else if (commandWord.equals("back")) {
-            goBack();
-        }
-        else if (commandWord.equals("quit")) {
-            wantToQuit = quit(command);
-        }
-        else if (commandWord.equals("look")) {
-            look();
-            showRoomItems();
-        }
-        else if (commandWord.equals("eat")){
-            eat();
-        }
-        else if (commandWord.equals("items")) {
-            showPlayerItems();
-        }
-        else if (commandWord.equals("take")) {
-            pickItem(command);
-        }
-        else if (commandWord.equals("drop")) {
-            dropItem(command);
-        }
-        else if(commandWord.equals("inspect")) {
-            inspectItem(command);
+        switch (commandWord) {
+            case UNKNOWN:
+                System.out.println("This command dosen't exists ! ");
+                break;
+            case HELP:
+                printHelp();
+                break;
+            case GO:
+                goRoom(command);
+                break;
+            case BACK:
+                goBack();
+                break;
+            case QUIT:
+                wantToQuit = quit(command);
+                break;
+            case LOOK: 
+                look();
+                showRoomItems();
+                break;
+            case EAT:
+                eat();
+                break;
+            case ITEMS:
+                showPlayerItems();
+                break;
+            case TAKE:
+                pickItem(command);
+                break;
+            case DROP: 
+                dropItem(command);
+                break;
+            case INSPECT: 
+                inspectItem(command);
+                break;
         }
 
         return wantToQuit;
