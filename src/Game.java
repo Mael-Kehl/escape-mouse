@@ -19,7 +19,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-        
+    private Room lastRoom;
     /**
      * Create the game and initialise its internal map.
      */
@@ -34,23 +34,46 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
-      
+        Room cave, kitchen, lounge, corridor, bedroom;
+        int[] weight = {0};
+        
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        cave = new Room("in the cave of the house");
+        kitchen = new Room("in the kitchen");
+        lounge = new Room("in the lounge");
+        corridor = new Room("in the corridor");
+        bedroom = new Room("in the bedroom");
         
         // initialise room exits
-        outside.setExits(null, theater, lab, pub);
-        theater.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
+        //cave.setExits(null, lounge, null, null, null, null);
+        //kitchen.setExits(null, corridor, lounge, cave, null, null);
+        //lounge.setExits(null, kitchen, null, null, null, null);
+        //corridor.setExits(kitchen, bedroom, null, null, null, null);
+        //bedroom.setExits(null, null, null, corridor, null, null);
+        
+        weight[0]=10;
+        cave.setExit("up", lounge);
+        //cave.setItems("Une étagère avec des outils", weight);
+        kitchen.setExit("east", corridor);
+        kitchen.setExit("west", lounge);
+        kitchen.setExit("south", cave);
+        weight[0]=10;
+        //kitchen.setItems("Un plan de travail", weight);
+        weight[0]=1;
+        //kitchen.setItems("Une pomme", weight);
+        lounge.setExit("west", kitchen);
+        weight[0]=10;
+        //lounge.setItems("Un magnifique sofa en cuir", weight);
+        corridor.setExit("north", bedroom);
+        corridor.setExit("east", kitchen);
+        weight[0]=5;
+        //corridor.setItems("Une trappe à souris",weight);
+        bedroom.setExit("south", corridor);
+        weight[0]=2;
+        //bedroom.setItems("  ",weight);
+        
 
-        currentRoom = outside;  // start game outside
+        currentRoom = cave;  // start game outside
     }
 
     /**
@@ -81,21 +104,43 @@ public class Game
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("Exits: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
-        System.out.println();
+        WriteDescription();
+    }
+    
+    private void look()
+    {
+    System.out.println(currentRoom.getLongDescription());
+    }
+    private void eat()
+    {
+    System.out.println("You have eaten, you're not hungry anymore");
+    }
+    private void back() {
+    	currentRoom=lastRoom;
+    }
+    
+    private void printLocationInfo() {
+    	System.out.println("You are "+currentRoom.getDescription());
+    	System.out.print("Exits: ");
+    	if (currentRoom.northExit !=null) {
+    		System.out.print("north ");
+    	}
+    	if (currentRoom.eastExit !=null) {
+    		System.out.print("east ");
+    	}
+    	if (currentRoom.southExit !=null) {
+    		System.out.print("south ");
+    	}
+    	if (currentRoom.westExit !=null) {
+    		System.out.print("west ");
+    	}
+    	if (currentRoom.upExit !=null) {
+    		System.out.print("up ");
+    	}
+    	if (currentRoom.downExit !=null) {
+    		System.out.print("down ");
+    	}
+    	System.out.println();
     }
 
     /**
@@ -117,10 +162,20 @@ public class Game
             printHelp();
         }
         else if (commandWord.equals("go")) {
+        	lastRoom=currentRoom;
             goRoom(command);
+        }
+        else if (commandWord.equals("look")) {
+            look();
         }
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
+        }
+        else if (commandWord.equals("eat")) {
+            eat();
+        }
+        else if (commandWord.equals("back")) {
+            back();
         }
 
         return wantToQuit;
@@ -139,7 +194,7 @@ public class Game
         System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
-        System.out.println("   go quit help");
+        parser.showCommands();
     }
 
     /** 
@@ -170,28 +225,24 @@ public class Game
         if(direction.equals("west")) {
             nextRoom = currentRoom.westExit;
         }
+        if(direction.equals("up")) {
+            nextRoom = currentRoom.upExit;
+        }
+        if(direction.equals("down")) {
+            nextRoom = currentRoom.downExit;
+        }
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
         else {
             currentRoom = nextRoom;
-            System.out.println("You are " + currentRoom.getDescription());
-            System.out.print("Exits: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("north ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("east ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("south ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("west ");
-            }
-            System.out.println();
+            WriteDescription();
         }
+    }
+    
+    private void WriteDescription() {
+        printLocationInfo();
     }
 
     /** 
