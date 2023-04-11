@@ -18,13 +18,14 @@
 public class Game 
 {
     private Parser parser;
-    private Room currentRoom;
+    private Player player;
         
     /**
      * Create the game and initialise its internal map.
      */
     public Game() 
     {
+        player = new Player();
         createRooms();
         parser = new Parser();
     }
@@ -34,23 +35,44 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room attic, laundryRoom, cellar, parentalBedRoom, catRoom, kitchen;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
-        
-        // initialise room exits
-        outside.setExits(null, theater, lab, pub);
-        theater.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
+        attic = new Room("the Attic were you woke up after being captured by a weird kid");
+        laundryRoom = new Room("the Laundry Room where all shoes from the familly are stored");
+        cellar = new Room("the Cellar of the house, where the cheese is stored");
+        parentalBedRoom = new Room("The bed room of the child's parents");
+        catRoom = new Room("The Room where the evil cat sleeps, try not to enter if you want to stay alive");
+        kitchen = new Room("The Kitchen with a fridge, interesting");
 
-        currentRoom = outside;  // start game outside
+        // initialise room exits
+        attic.setExits("south", laundryRoom);
+        laundryRoom.setExits("south", cellar);
+        cellar.setExits("north", parentalBedRoom);
+        parentalBedRoom.setExits("north", catRoom);
+        parentalBedRoom.setExits("east", kitchen);
+        catRoom.setExits("south", parentalBedRoom);
+
+        player.setCurrentRoom(attic);  // start game outside
+
+        //Creation of all items 
+        Item shelves, shoes, tires, bed, catTree, fridge, cheese;
+
+        shelves = new Item("shelves", "Shelves where shoes are stored", 20000);
+        shoes = new Item("shoes", "Pair of old air jordan red/white", 500);
+        tires = new Item("tires", "Brand new Tires for a Mustang", 5000);
+        bed = new Item("bed", "Bed with two places", 10000);
+        catTree = new Item("cat tree", "Giant cat tree in beige color", 6000);
+        fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
+        cheese = new Item("cheese", "Piece of cheese that you can eat to heal", 200);
+
+        attic.addItem(shelves);
+        attic.addItem(cheese);
+        laundryRoom.addItem(shoes);
+        cellar.addItem(tires);
+        parentalBedRoom.addItem(bed);
+        catRoom.addItem(catTree);
+        kitchen.addItem(fridge);
     }
 
     /**
@@ -77,25 +99,11 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
+        System.out.println("Welcome to Escape Mouse !");
+        System.out.println("Escape Mouse is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("Exits: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
-        System.out.println();
+        printLocationInfo();
     }
 
     /**
@@ -107,20 +115,43 @@ public class Game
     {
         boolean wantToQuit = false;
 
-        if(command.isUnknown()) {
-            System.out.println("I don't know what you mean...");
-            return false;
-        }
+        CommandWord commandWord = command.getCommandWord();
 
-        String commandWord = command.getCommandWord();
-        if (commandWord.equals("help")) {
-            printHelp();
-        }
-        else if (commandWord.equals("go")) {
-            goRoom(command);
-        }
-        else if (commandWord.equals("quit")) {
-            wantToQuit = quit(command);
+        switch (commandWord) {
+            case UNKNOWN:
+                System.out.println("This command dosen't exists ! ");
+                break;
+            case HELP:
+                printHelp();
+                break;
+            case GO:
+                goRoom(command);
+                break;
+            case BACK:
+                goBack();
+                break;
+            case QUIT:
+                wantToQuit = quit(command);
+                break;
+            case LOOK: 
+                look();
+                showRoomItems();
+                break;
+            case EAT:
+                eat();
+                break;
+            case ITEMS:
+                showPlayerItems();
+                break;
+            case TAKE:
+                pickItem(command);
+                break;
+            case DROP: 
+                dropItem(command);
+                break;
+            case INSPECT: 
+                inspectItem(command);
+                break;
         }
 
         return wantToQuit;
@@ -139,7 +170,57 @@ public class Game
         System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
-        System.out.println("   go quit help");
+        System.out.println(parser.getCommands());
+    }
+
+    /**
+     * Prints description of an item in the room
+     * @param command command parsed in terminal, that has two fields including the name of the item
+     */
+    private void inspectItem(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Inspect which item ?");
+            return;
+        }
+
+        String itemName = command.getSecondWord();
+        System.out.println(player.getCurrentRoom().getItemDescription(itemName));
+    }
+
+    /**
+     * Try to pick an item 
+     * @param command
+     */
+    private void pickItem(Command command){
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what item we should take
+            System.out.println("Which item do you want to take ?");
+            return;
+        }
+
+        //We first recover the item from its name
+        String itemName = command.getSecondWord();
+        Item itemToPick = player.getCurrentRoom().getItemByName(itemName);
+
+        if (itemToPick != null) {
+            player.pickUpItem(itemToPick);
+        }
+        else {
+            System.out.println("There is no object named " + itemName + " !");
+        }
+    }
+
+    private void dropItem(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what item we should drop
+            System.out.println("Which item do you want to drop ?");
+            return;
+        }
+        String itemName = command.getSecondWord();
+        Item itemToDrop = player.getItemByName(itemName);
+
+        if (itemToDrop != null ) player.dropItem(itemToDrop);
     }
 
     /** 
@@ -155,43 +236,78 @@ public class Game
         }
 
         String direction = command.getSecondWord();
-
+        Room current = player.getCurrentRoom();
         // Try to leave current room.
         Room nextRoom = null;
         if(direction.equals("north")) {
-            nextRoom = currentRoom.northExit;
+            nextRoom = current.getExit("north");
         }
         if(direction.equals("east")) {
-            nextRoom = currentRoom.eastExit;
+            nextRoom = current.getExit("east");
         }
         if(direction.equals("south")) {
-            nextRoom = currentRoom.southExit;
+            nextRoom = current.getExit("south");
         }
         if(direction.equals("west")) {
-            nextRoom = currentRoom.westExit;
+            nextRoom = current.getExit("west");
         }
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
         else {
-            currentRoom = nextRoom;
-            System.out.println("You are " + currentRoom.getDescription());
-            System.out.print("Exits: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("north ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("east ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("south ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("west ");
-            }
-            System.out.println();
+            //Every time we change room we push it to the previousRoom Stack
+            player.addPreviousRoom(current);
+            player.setCurrentRoom(nextRoom);
+            printLocationInfo();
         }
+    }
+
+    /**
+     * Try to go on the previous room
+     * If not possible, there is an error message
+     */
+    private void goBack(){
+        //The last element of stack is the previous room
+        //When we're in we can pop it from the stack
+        if (!player.getAllPreviousRooms().isEmpty()) {
+            Room previous = player.getLastPreviousRoom();
+            player.setCurrentRoom(previous);
+            player.popPreviousRoom();
+            printLocationInfo();
+        }
+        else {
+            System.out.println("You cannot go back ! ");
+        }
+    }
+
+
+
+    /**
+     * Try to look around current room to give informations
+     */
+    private void look() {
+        System.out.println(player.getCurrentRoom().getLongDescription());
+    }
+
+    private void showRoomItems() {
+        System.out.print("Items : ");
+        System.out.println(player.getCurrentRoom().getItemList());
+    }   
+
+    private void showPlayerItems() {
+        System.out.print("Inventory : ");
+        System.out.println(player.getItemsCarried());
+    }
+
+    private void eat() {
+        System.out.println("You've eaten cheese, you're now in good shape");
+    }
+
+    private void printLocationInfo(){
+        System.out.println(player.getCurrentRoom().getLongDescription());
+        
+        showRoomItems();
     }
 
     /** 
