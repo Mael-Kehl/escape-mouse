@@ -75,6 +75,10 @@ public class Game
         kitchen.addItem(fridge);
     }
 
+    public void update(int[] position) {
+        System.out.println("Position : " + position[0] + " " + position[1]);
+    }
+
     /**
      *  Main play routine.  Loops until end of play.
      */
