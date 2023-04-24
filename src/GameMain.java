@@ -7,9 +7,9 @@ public class GameMain {
 
         MainView mainview;
         Game game = new Game();
-        Controler controler = new Controler(game);
-
         mainview = new MainView(game);
+
+        Controler controler = new Controler(game, mainview);
         mainview.addMouseListener(controler);
 
         /******************** 

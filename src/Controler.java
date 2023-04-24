@@ -4,10 +4,12 @@ import javax.swing.event.MouseInputListener;
 
 public class Controler implements MouseInputListener{
     Game game;
+    MainView mainView;
     //int positionImage = (int)Math.floor(x/120)+(int)Math.floor(y/120)*5;
 
-    public Controler(Game game){
+    public Controler(Game game, MainView mainview){
         this.game = game;
+        this.mainView = mainview;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class Controler implements MouseInputListener{
     public void mousePressed(MouseEvent e) {
         int[] positionClick = {(int)Math.floor(e.getX()) ,(int)Math.floor(e.getY())};
         game.update(positionClick);
+        mainView.update();
     }
 
     @Override
