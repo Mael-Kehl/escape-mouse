@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-public class MainView extends JPanel {
+public class View extends JPanel {
     Game game;
     JButton fwdButton, bwdButton, leftButton, rightButton, upButton, downButton;
     Color randomColor;
     
-    public MainView(Game game){
+    public View(Game game){
         super();
         this.game = game;
         this.setPreferredSize(new Dimension(605,485));

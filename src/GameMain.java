@@ -5,9 +5,9 @@ import java.awt.Color;
 public class GameMain {
     public static void main(String[] args) {
 
-        MainView mainview;
+        View mainview;
         Game game = new Game();
-        mainview = new MainView(game);
+        mainview = new View(game);
 
         Controler controler = new Controler(game, mainview);
         mainview.addMouseListener(controler);
