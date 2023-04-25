@@ -21,7 +21,6 @@ public class GameMain {
          * JFrame of the game
          *********************/
         JFrame frame=new JFrame("Escape Mouse");
-		frame.getContentPane().setBackground(Color.BLUE);	 
 		
 		frame.getContentPane().add(mainview,BorderLayout.CENTER);
 		// frame.getContentPane().add(panneauSud,BorderLayout.SOUTH);

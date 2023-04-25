@@ -29,6 +29,14 @@ public class Game
         catRoom = new Room("The Room where the evil cat sleeps, try not to enter if you want to stay alive");
         kitchen = new Room("The Kitchen with a fridge, interesting");
 
+        // Adding img path to each room (model is a bit blend with view)
+        attic.setImgPath("./images/attic-background.jpg");
+        laundryRoom.setImgPath("./images/laundry-background.jpg");
+        cellar.setImgPath("./images/cellar-background.png");
+        parentalBedRoom.setImgPath("./images/bedroom-background.jpg");
+        catRoom.setImgPath("./images/catroom-background.jpg");
+        kitchen.setImgPath("./images/kitchen-background.jpg");
+
         // initialise room exits
         attic.setExits("south", laundryRoom);
         laundryRoom.setExits("south", cellar);
@@ -251,6 +259,10 @@ public class Game
             player.setCurrentRoom(nextRoom);
             printLocationInfo();
         }
+    }
+
+    public Room getCurrentRoom() {
+        return player.getCurrentRoom();
     }
 
     /**

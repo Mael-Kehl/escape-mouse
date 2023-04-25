@@ -21,6 +21,7 @@ public class Room
     private String description;
     private HashMap<String, Room> exits;
     private Vector<Item> items; 
+    private String imgPath;
 
     /**
      * Create a room described "description". Initially, it has
@@ -142,6 +143,14 @@ public class Room
     public String getLongDescription()
     {
     return "You are in " + description + ".\n" + getExitString();
+    }
+
+    public String getImgPath(){
+        return this.imgPath;
+    }
+
+    public void setImgPath(String path) {
+        this.imgPath = path;
     }
 
 }

@@ -1,5 +1,7 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.*;
 import java.util.Random;
 
@@ -9,25 +11,24 @@ public class View extends JPanel {
     DirectionButtonsControler dirControler;
     JButton northButton, southButton, eastButton, westButton, backButton, downButton;
     Insets insets;
+
+    Image backgroundImage;
     
     public View(Game game){
         super();
         this.game = game;
         this.setPreferredSize(new Dimension(605,485));
         this.setLayout(null);
+        try {
+            backgroundImage = ImageIO.read(getClass().getResource("./images/cellar-background.png"));
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         insets = this.getInsets();
-
+         /* Controller that listens to this element, especially to its buttons */
+         dirControler = new DirectionButtonsControler(game, this);
         initButtons();
-
-        /* Controller that listens to this element, especially to its buttons */
-        dirControler = new DirectionButtonsControler(game, this);
-
-        northButton.addMouseListener(dirControler);
-        southButton.addMouseListener(dirControler);
-        eastButton.addMouseListener(dirControler);
-        westButton.addMouseListener(dirControler);
-        backButton.addMouseListener(dirControler);
-
     }
 
     /*
@@ -75,6 +76,13 @@ public class View extends JPanel {
         eastButton.setBounds(92 + insets.left, 37 + insets.top, 32, 32);
         setButtonTransparent(eastButton);
 
+        /* Add controler */
+        northButton.addMouseListener(dirControler);
+        southButton.addMouseListener(dirControler);
+        eastButton.addMouseListener(dirControler);
+        westButton.addMouseListener(dirControler);
+        backButton.addMouseListener(dirControler);
+
     }
 
     private void setButtonTransparent(JButton button){
@@ -85,11 +93,19 @@ public class View extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        setBackground(randomColor);
+        Room currentRoom = game.getCurrentRoom();
+        String bgImgPath = currentRoom.getImgPath();
+        try {
+            backgroundImage = ImageIO.read(getClass().getResource(bgImgPath));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        g.drawImage(backgroundImage, 0, 0, this);
+        //setBackground(randomColor);
     }
 
     public void update() {
-        System.out.println("Fonction called");
         Random rand = new Random();
 
         float r = rand.nextFloat();
