@@ -1,8 +1,11 @@
 import javax.swing.JFrame;
+import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
 public class GameMain {
+
+    
     public static void main(String[] args) {
 
         View mainview;
@@ -11,6 +14,8 @@ public class GameMain {
 
         Controler controler = new Controler(game, mainview);
         mainview.addMouseListener(controler);
+        
+
 
         /******************** 
          * JFrame of the game
