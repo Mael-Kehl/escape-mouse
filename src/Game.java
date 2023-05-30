@@ -30,12 +30,12 @@ public class Game
         kitchen = new Room("The Kitchen with a fridge, interesting");
 
         // Adding img path to each room (model is a bit blend with view)
-        attic.setImgPath("./images/attic-background.jpg");
-        laundryRoom.setImgPath("./images/laundry-background.jpg");
+        attic.setImgPath("./images/attic-background.png");
+        laundryRoom.setImgPath("./images/laundry-background.png");
         cellar.setImgPath("./images/cellar-background.png");
-        parentalBedRoom.setImgPath("./images/bedroom-background.jpg");
-        catRoom.setImgPath("./images/catroom-background.jpg");
-        kitchen.setImgPath("./images/kitchen-background.jpg");
+        parentalBedRoom.setImgPath("./images/bedroom-background.png");
+        catRoom.setImgPath("./images/hall-background.png");
+        kitchen.setImgPath("./images/kitchen-background.png");
 
         // initialise room exits
         attic.setExits("south", laundryRoom);

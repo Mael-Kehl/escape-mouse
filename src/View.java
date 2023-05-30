@@ -7,17 +7,18 @@ import java.util.Random;
 
 public class View extends JPanel {
     Game game;
-    Color randomColor;
     DirectionButtonsControler dirControler;
     JButton northButton, southButton, eastButton, westButton, backButton, downButton;
     Insets insets;
+    final int SCREEN_WIDTH = 1280;
+    final int SCREEN_HEIGHT = 720;
 
     Image backgroundImage;
     
     public View(Game game){
         super();
         this.game = game;
-        this.setPreferredSize(new Dimension(605,485));
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setLayout(null);
         try {
             backgroundImage = ImageIO.read(getClass().getResource("./images/cellar-background.png"));
@@ -27,7 +28,7 @@ public class View extends JPanel {
         }
         insets = this.getInsets();
          /* Controller that listens to this element, especially to its buttons */
-         dirControler = new DirectionButtonsControler(game, this);
+        dirControler = new DirectionButtonsControler(game, this);
         initButtons();
     }
 
@@ -96,23 +97,16 @@ public class View extends JPanel {
         Room currentRoom = game.getCurrentRoom();
         String bgImgPath = currentRoom.getImgPath();
         try {
-            backgroundImage = ImageIO.read(getClass().getResource(bgImgPath));
+            // Rescale image to the game resolution
+            backgroundImage = ImageIO.read(getClass().getResource(bgImgPath)).getScaledInstance(SCREEN_WIDTH, SCREEN_HEIGHT, Image.SCALE_DEFAULT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
         g.drawImage(backgroundImage, 0, 0, this);
-        //setBackground(randomColor);
     }
 
     public void update() {
-        Random rand = new Random();
-
-        float r = rand.nextFloat();
-        float b = rand.nextFloat();
-        float g = rand.nextFloat();
-
-        this.randomColor = new Color(r,g,b);
         repaint();
     }
 }
