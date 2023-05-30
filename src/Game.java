@@ -19,33 +19,51 @@ public class Game
      */
     private void createRooms()
     {
-        Room attic, laundryRoom, cellar, parentalBedRoom, catRoom, kitchen;
+        Room attic, livingRoom, cellar, parentalBedRoom, hallRoom, kitchen, garden;
       
         // create the rooms
-        attic = new Room("the Attic were you woke up after being captured by a weird kid");
-        laundryRoom = new Room("the Laundry Room where all shoes from the familly are stored");
-        cellar = new Room("the Cellar of the house, where the cheese is stored");
-        parentalBedRoom = new Room("The bed room of the child's parents");
-        catRoom = new Room("The Room where the evil cat sleeps, try not to enter if you want to stay alive");
-        kitchen = new Room("The Kitchen with a fridge, interesting");
-
-        // Adding img path to each room (model is a bit blend with view)
-        attic.setImgPath("./images/attic-background.png");
-        laundryRoom.setImgPath("./images/laundry-background.png");
+        cellar = new Room("Cellar of the house");
         cellar.setImgPath("./images/cellar-background.png");
+
+        hallRoom = new Room("Hall of the house");
+        hallRoom.setImgPath("./images/hall-background.png");
+
+        livingRoom = new Room("Living room of the house");
+        livingRoom.setImgPath("./images/livingroom-background.png");
+
+        attic = new Room("Attic of the house");
+        attic.setImgPath("./images/attic-background.png");
+
+        parentalBedRoom = new Room("The bed room of the child's parents");
         parentalBedRoom.setImgPath("./images/bedroom-background.png");
-        catRoom.setImgPath("./images/hall-background.png");
+
+        kitchen = new Room("The Kitchen with a fridge, interesting");
         kitchen.setImgPath("./images/kitchen-background.png");
 
-        // initialise room exits
-        attic.setExits("south", laundryRoom);
-        laundryRoom.setExits("south", cellar);
-        cellar.setExits("north", parentalBedRoom);
-        parentalBedRoom.setExits("north", catRoom);
-        parentalBedRoom.setExits("east", kitchen);
-        catRoom.setExits("south", parentalBedRoom);
+        garden = new Room("Garden of the house");
+        garden.setImgPath("./images/garden-background.png");
 
-        player.setCurrentRoom(attic);  // start game outside
+        cellar.setExits("north", hallRoom);
+        cellar.setExits("east", garden);
+
+        hallRoom.setExits("east", livingRoom);
+        hallRoom.setExits("west", kitchen);
+        hallRoom.setExits("north", parentalBedRoom);
+        hallRoom.setExits("south", cellar);
+
+        kitchen.setExits("east", hallRoom);
+        
+        livingRoom.setExits("north", attic);
+        livingRoom.setExits("west", hallRoom);
+
+        parentalBedRoom.setExits("east", attic);
+        parentalBedRoom.setExits("south", livingRoom);
+
+        attic.setExits("south", livingRoom);
+        attic.setExits("east", garden);
+   
+
+        player.setCurrentRoom(cellar);  // start game outside
 
         //Creation of all items 
         Item shelves, shoes, tires, bed, catTree, fridge, cheese;
@@ -60,10 +78,9 @@ public class Game
 
         attic.addItem(shelves);
         attic.addItem(cheese);
-        laundryRoom.addItem(shoes);
         cellar.addItem(tires);
         parentalBedRoom.addItem(bed);
-        catRoom.addItem(catTree);
+        hallRoom.addItem(catTree);
         kitchen.addItem(fridge);
     }
 

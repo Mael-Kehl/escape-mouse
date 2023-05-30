@@ -1,9 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.util.*;
-import java.util.Random;
 
 public class View extends JPanel {
     Game game;
