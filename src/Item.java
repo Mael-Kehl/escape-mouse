@@ -3,6 +3,7 @@ public class Item {
     private String name;
     private String description;
     private int weight; //weight of the object in grams
+    private String imgPath;
 
     
     public Item(String name, String description, int weight) {
@@ -35,7 +36,13 @@ public class Item {
         this.weight = weight;
     }
 
-    
+    public String getImgPath(){
+        return this.imgPath;
+    }
+
+    public void setImgPath(String path) {
+        this.imgPath = path;
+    }
 
     
 

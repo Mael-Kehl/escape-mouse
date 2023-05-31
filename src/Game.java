@@ -1,3 +1,4 @@
+import java.util.Vector;
 
 public class Game
 {
@@ -98,7 +99,6 @@ public class Game
 
         // Enter the main command loop.  Here we repeatedly read commands and
         // execute them until the game is over.
-                
         boolean finished = false;
         while (! finished) {
             //Command comming from controler
@@ -153,7 +153,7 @@ public class Game
                 showRoomItems();
                 break;
             case EAT:
-                eat();
+                eat(command);
                 break;
             case ITEMS:
                 showPlayerItems();
@@ -316,11 +316,18 @@ public class Game
 
     private void showPlayerItems() {
         System.out.print("Inventory : ");
-        System.out.println(player.getItemsCarried());
+        System.out.println(player.getItemsCarriedString());
     }
 
-    private void eat() {
+    public Vector<Item> getPlayerItems(){
+        return player.getItemsCarried();
+    }
+
+    private void eat(Command command) {
+        
         System.out.println("You've eaten cheese, you're now in good shape");
+        //Add life to player
+        dropItem(command);
     }
 
     private void printLocationInfo(){
