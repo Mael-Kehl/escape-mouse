@@ -13,7 +13,9 @@ public class Player {
     private Vector<Item> items;
     private int currentWeight = 0; //current weight carried by the player
     private int maxWeight = 1000; //Maximum weight the player can carry in grams
-    private int MAX_ITEMS_NUMBER = 5;
+    private final int MAX_ITEMS_NUMBER = 5;
+    private int life_points = 1;
+    private final int MAX_LIFE_POINTS = 3;
 
     public Player(){
         previousRooms = new Stack<Room>();
@@ -134,6 +136,21 @@ public class Player {
         return this.previousRooms;
     }
 
+    public int getLifePoints() {
+        return life_points;
+    }
+
+    public void setLifePoints(int life_points) {
+        this.life_points = life_points;
+    }
+
+    public void addLifePoint(){
+        if (life_points < MAX_LIFE_POINTS) life_points++;
+    }
+
+    public void removeLifePoint(){
+        if (life_points>0) life_points--;
+    }
 
 
 }

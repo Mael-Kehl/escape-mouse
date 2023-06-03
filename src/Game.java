@@ -282,6 +282,10 @@ public class Game
         return player.getCurrentRoom();
     }
 
+    public int getPlayerLife(){
+        return player.getLifePoints();
+    }
+
     /**
      * Try to go on the previous room
      * If not possible, there is an error message
@@ -324,9 +328,8 @@ public class Game
     }
 
     private void eat(Command command) {
-        
-        System.out.println("You've eaten cheese, you're now in good shape");
-        //Add life to player
+        player.addLifePoint();
+        System.out.println(player.getLifePoints());
         dropItem(command);
     }
 

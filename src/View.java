@@ -5,12 +5,18 @@ import java.util.Vector;
 
 public class View extends JPanel {
     Game game;
+
+    //Controlers
     DirectionButtonsControler dirControler;
     InventoryControler invControler;
+
+    //Buttons, and panels
     JButton northButton, southButton, eastButton, westButton, backButton, downButton;
     Vector<JButton> inventoryButtons;
     JLabel inventory;
     Insets insets;
+
+    //Constants
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = 720;
     final int[] ITEMS_X_POS = {440, 520, 610, 695, 783};
@@ -44,14 +50,17 @@ public class View extends JPanel {
      * Places the button with absolute positionning (simplier than doing panel + flowlayout, etc..)
      */
     private void initDirectionalButtons(){
-
+        //Getting the icon of the arrow
         Icon icon = new ImageIcon(getClass().getResource("icons/up-arrow.png"));
-
+        //Assigning it to a JButton
         northButton = new JButton(icon);
+        //Adding the command associated to the button in its properties
+        //So the controler is able to read the command and update the model(game)
         northButton.putClientProperty("command", new Command(CommandWord.GO, "north"));
         this.add(northButton);
+        //PLacing the element
         northButton.setBounds(60 + insets.left, 5 + insets.top, 32,32);
-        setButtonTransparent(northButton);
+        enableButtonTransparency(northButton);
 
         icon = new ImageIcon(getClass().getResource("icons/down-arrow.png"));
 
@@ -59,7 +68,7 @@ public class View extends JPanel {
         southButton.putClientProperty("command", new Command(CommandWord.GO, "south"));
         this.add(southButton);
         southButton.setBounds(60 + insets.left, 69 + insets.top, 32, 32);
-        setButtonTransparent(southButton);
+        enableButtonTransparency(southButton);
 
         icon = new ImageIcon(getClass().getResource("icons/left-arrow.png"));
 
@@ -67,13 +76,13 @@ public class View extends JPanel {
         westButton.putClientProperty("command", new Command(CommandWord.GO, "west"));
         this.add(westButton);
         westButton.setBounds(28 + insets.left, 37 + insets.top, 32, 32);
-        setButtonTransparent(westButton);
+        enableButtonTransparency(westButton);
 
         backButton = new JButton(icon);
         backButton.putClientProperty("command", new Command(CommandWord.BACK, null));
         this.add(backButton);
         backButton.setBounds(60 + insets.left, 101 + insets.top, 32, 32);
-        setButtonTransparent(backButton);
+        enableButtonTransparency(backButton);
 
         icon = new ImageIcon(getClass().getResource("icons/right-arrow.png"));
 
@@ -81,9 +90,9 @@ public class View extends JPanel {
         eastButton.putClientProperty("command", new Command(CommandWord.GO, "east"));
         this.add(eastButton);
         eastButton.setBounds(92 + insets.left, 37 + insets.top, 32, 32);
-        setButtonTransparent(eastButton);
+        enableButtonTransparency(eastButton);
 
-        /* Add controler */
+        /* Add controler to buttonss */
         northButton.addMouseListener(dirControler);
         southButton.addMouseListener(dirControler);
         eastButton.addMouseListener(dirControler);
@@ -91,15 +100,26 @@ public class View extends JPanel {
         backButton.addMouseListener(dirControler);
     }
 
+    /**
+     * Draws the inventory on the panel
+     */
     private void initInventory() {
+        //Getting the inventory icon and assigning it to a JLbale
         Icon icon = new ImageIcon(getClass().getResource("icons/inventory.png"));
         inventory = new JLabel(icon);
         this.add(inventory);
+        //Enable transparency
         inventory.setOpaque(false);
+        //Placing the element
         inventory.setBounds(273 + insets.left, 516 + insets.top, 626, 204);
+        //Filling the inventory 
         updateInventory();
     }
 
+    /**
+     * Updates the inventory by removing all its elements, and adding the new ones 
+     * Function called at every update of the view
+     */
     private void updateInventory(){
         try {
             
@@ -134,7 +154,7 @@ public class View extends JPanel {
                     Icon icon = new ImageIcon(getClass().getResource(itemPath));
                     //Create new JButton containing the icon
                     JButton inventoryItem = new JButton(icon);
-                    setButtonTransparent(inventoryItem);
+                    enableButtonTransparency(inventoryItem);
                     //Setting bounds dynamically, based on absolute positions
                     inventoryItem.setBounds(ITEMS_X_POS[current_item_in_inv]+insets.left, ITEMS_Y_POS[current_item_in_inv]+insets.top, 64, 64);
                     
@@ -149,11 +169,14 @@ public class View extends JPanel {
             }
         } catch (Exception e) {
             System.out.println("Exception drawing items in inventory : " + e.getMessage());
-            System.out.println(e);
         }
     }
 
-    private void setButtonTransparent(JButton button){
+    /**
+     * Enables button to be transparent
+     * @param button
+     */
+    private void enableButtonTransparency(JButton button){
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
@@ -161,17 +184,36 @@ public class View extends JPanel {
 
     public void paintComponent(Graphics g) {
 
-        //Draw background in view
+        /** --------- Draw background --------- */
         super.paintComponent(g);
+
+        //Getting the path of the background image
         Room currentRoom = game.getCurrentRoom();
         String bgImgPath = currentRoom.getImgPath();
+
+        //Trying to get the image associated to the current room based on its path
         try {
             // Rescale image to the game resolution
             backgroundImage = ImageIO.read(getClass().getResource(bgImgPath)).getScaledInstance(SCREEN_WIDTH, SCREEN_HEIGHT, Image.SCALE_DEFAULT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        //Drawing the background image
         g.drawImage(backgroundImage, 0, 0, this);
+
+        /** --------- Draw life points --------- */
+
+        try {
+            int image_offset = 0;
+            Image image = ImageIO.read(getClass().getResource("./images/heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
+            for (int index = 0; index < game.getPlayerLife(); index++) {
+                g.drawImage(image, 350 + image_offset, 520, this);
+                image_offset += 40;
+            }
+        } catch (Exception e) {
+            System.out.println("Error happened drawing life points on screen : " + e.getMessage());
+        }
+
     }
 
     public void update() {
