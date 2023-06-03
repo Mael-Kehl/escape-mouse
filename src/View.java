@@ -42,6 +42,7 @@ public class View extends JPanel {
         invControler = new InventoryControler(game, this);
         initDirectionalButtons();
         initInventory();
+        updateItemsInRoom();
     }
 
     /*
@@ -172,6 +173,37 @@ public class View extends JPanel {
         }
     }
 
+    private void updateItemsInRoom(){
+
+        //Remove items in room so we can render the new ones
+        Component[] components = this.getComponents();
+        for (Component comp : components) {
+            //We test if these components are JButton, if so we're getting it's associated command word
+            if (comp instanceof JButton) {
+                JButton butt = (JButton)comp;
+                Command com = (Command)butt.getClientProperty("command");
+
+                //if the command word is eat, it means that the button is an eatable item in the inventory
+                if (com.getCommandWord() == CommandWord.TAKE) {
+                    //So we have to remove it to clear the inventory
+                    this.remove(comp);
+                }
+            }
+        }
+
+        Vector<Item> items = game.getCurrentRoom().getItems();
+
+        for (Item item : items) {
+            String itemPath = item.getImgPath();
+            //Create new icon
+            Icon icon = new ImageIcon(getClass().getResource(itemPath));
+            JButton itemButton = new JButton(icon);
+            enableButtonTransparency(itemButton);
+            itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
+            itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, 64,64);
+            this.add(itemButton);
+        }
+    }
     /**
      * Enables button to be transparent
      * @param button
@@ -219,5 +251,6 @@ public class View extends JPanel {
     public void update() {
         repaint();
         updateInventory();
+        updateItemsInRoom();
     }
 }

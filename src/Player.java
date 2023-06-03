@@ -34,7 +34,7 @@ public class Player {
      * @param item Item to pick
      */
     public void pickUpItem(Item item){
-        if (currentWeight < maxWeight && item.getWeight() <= maxWeight) {
+        if (currentWeight < maxWeight && item.getWeight() <= maxWeight && items.size() < MAX_ITEMS_NUMBER) {
             this.items.add(item);
             this.currentWeight += item.getWeight();
             //If we pick an item, it is no more in the room, so we remove it from the room items list

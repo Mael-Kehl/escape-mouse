@@ -73,16 +73,14 @@ public class Game
         shoes = new Item("shoes", "Pair of old air jordan red/white", 500);
         tires = new Item("tires", "Brand new Tires for a Mustang", 5000);
         bed = new Item("bed", "Bed with two places", 10000);
-        catTree = new Item("cat tree", "Giant cat tree in beige color", 6000);
         fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
-        cheese = new Item("cheese", "Piece of cheese that you can eat to heal", 200);
+        cheese = new Item("cheese", "Piece of cheese that you can eat to heal", "./images/cheese-item.png", 200, 0, 0);
 
-        attic.addItem(shelves);
-        attic.addItem(cheese);
-        cellar.addItem(tires);
-        parentalBedRoom.addItem(bed);
-        hallRoom.addItem(catTree);
-        kitchen.addItem(fridge);
+        // attic.addItem(shelves);
+        cellar.addItem(cheese);
+        // cellar.addItem(tires);
+        // parentalBedRoom.addItem(bed);
+        // kitchen.addItem(fridge);
     }
 
     public void update(int[] position, Command command) {

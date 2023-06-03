@@ -4,12 +4,27 @@ public class Item {
     private String description;
     private int weight; //weight of the object in grams
     private String imgPath;
+    private int posX, posY;
 
     
     public Item(String name, String description, int weight) {
         this.name = name;
         this.description = description;
         this.weight = weight;
+    }
+
+    public Item(String name, String description, String imgpath, int weight, int posx, int posy) {
+        this.name = name;
+        this.description = description;
+        this.imgPath = imgpath;
+        this.weight = weight;
+        this.posX = posx;
+        this.posY = posy;
+    }
+
+    public void setPos(int posx, int posy) {
+        this.posX = posx;
+        this.posY = posy;
     }
 
     public String getDescription() {
@@ -43,6 +58,15 @@ public class Item {
     public void setImgPath(String path) {
         this.imgPath = path;
     }
+
+    public int getPosX(){
+        return this.posX;
+    }
+
+    public int getPosY(){
+        return this.posY;
+    }
+
 
     
 

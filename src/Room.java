@@ -97,6 +97,10 @@ public class Room
         return itemList;
     }
 
+    public Vector<Item> getItems() {
+        return this.items;
+    }
+
     /**
      * Returns an item in a room from its name
      * @param name String 
