@@ -67,20 +67,23 @@ public class Game
         player.setCurrentRoom(cellar);  // start game outside
 
         //Creation of all items 
-        Item shelves, shoes, tires, bed, catTree, fridge, cheese;
+        Item fridge, cheese1, cheese2;
 
-        shelves = new Item("shelves", "Shelves where shoes are stored", 20000);
-        shoes = new Item("shoes", "Pair of old air jordan red/white", 500);
-        tires = new Item("tires", "Brand new Tires for a Mustang", 5000);
-        bed = new Item("bed", "Bed with two places", 10000);
         fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
-        cheese = new Item("cheese", "Piece of cheese that you can eat to heal", "./images/cheese-item.png", 200, 0, 0);
+        cheese1 = new Item("cheese1", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1000, 275);
+        cheese2 = new Item("cheese2", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1040, 395);
 
-        // attic.addItem(shelves);
-        cellar.addItem(cheese);
-        // cellar.addItem(tires);
-        // parentalBedRoom.addItem(bed);
-        // kitchen.addItem(fridge);
+        cellar.addItem(cheese1);
+        cellar.addItem(cheese2);
+
+        ExitItem cellarLadder, atticLadder;
+
+        cellarLadder = new ExitItem("ladder", "ladder of the cellar", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
+        cellar.addItem(cellarLadder);
+
+        atticLadder = new ExitItem("ladder", "ladder of the attic", "./images/attic-ladder.png", 1200, 286, 143, 825, 500, "south");
+        attic.addItem(atticLadder);
+
     }
 
     public void update(int[] position, Command command) {
@@ -327,7 +330,6 @@ public class Game
 
     private void eat(Command command) {
         player.addLifePoint();
-        System.out.println(player.getLifePoints());
         dropItem(command);
     }
 

@@ -23,10 +23,7 @@ public class Player {
         Item cheese = new Item("cheese", "Piece of cheese", 10 );
         cheese.setImgPath("./images/cheese-item.png");
         items.add(cheese);
-        items.add(cheese);
-        items.add(cheese);
-        items.add(cheese);
-        items.add(cheese);
+        
     }
 
     /**
@@ -53,7 +50,6 @@ public class Player {
         if (!items.isEmpty()) {
             items.remove(item);
             // If we drop an item, it is in the room 
-            this.currentRoom.addItem(item);
         }
     }
 

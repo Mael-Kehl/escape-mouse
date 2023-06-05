@@ -9,6 +9,7 @@ public class View extends JPanel {
     //Controlers
     DirectionButtonsControler dirControler;
     InventoryControler invControler;
+    PickableItemControler pickableControler;
 
     //Buttons, and panels
     JButton northButton, southButton, eastButton, westButton, backButton, downButton;
@@ -40,6 +41,7 @@ public class View extends JPanel {
          /* Controller that listens to this element, especially to its buttons */
         dirControler = new DirectionButtonsControler(game, this);
         invControler = new InventoryControler(game, this);
+        pickableControler = new PickableItemControler(game, this);
         initDirectionalButtons();
         initInventory();
         updateItemsInRoom();
@@ -184,13 +186,14 @@ public class View extends JPanel {
                 Command com = (Command)butt.getClientProperty("command");
 
                 //if the command word is eat, it means that the button is an eatable item in the inventory
-                if (com.getCommandWord() == CommandWord.TAKE) {
+                if (com.getCommandWord() == CommandWord.TAKE || com.getCommandWord() == CommandWord.GO) {
                     //So we have to remove it to clear the inventory
                     this.remove(comp);
                 }
             }
         }
-
+        //Because we removed all buttons with a "GO" command, we have to print again directional buttons
+        initDirectionalButtons();
         Vector<Item> items = game.getCurrentRoom().getItems();
 
         for (Item item : items) {
@@ -199,9 +202,18 @@ public class View extends JPanel {
             Icon icon = new ImageIcon(getClass().getResource(itemPath));
             JButton itemButton = new JButton(icon);
             enableButtonTransparency(itemButton);
-            itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
-            itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, 64,64);
+
+            if (item instanceof ExitItem) {
+                ExitItem exitItem = (ExitItem)item;
+                itemButton.putClientProperty("command", new Command(CommandWord.GO, exitItem.getExit()));
+            }
+            else {
+                itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
+            }
+            
+            itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, item.getWidth(), item.getHeight());
             this.add(itemButton);
+            itemButton.addMouseListener(pickableControler);
         }
     }
     /**
@@ -225,7 +237,7 @@ public class View extends JPanel {
 
         //Trying to get the image associated to the current room based on its path
         try {
-            // Rescale image to the game resolution
+            // Rescale image to the game resolution 
             backgroundImage = ImageIO.read(getClass().getResource(bgImgPath)).getScaledInstance(SCREEN_WIDTH, SCREEN_HEIGHT, Image.SCALE_DEFAULT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
