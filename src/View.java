@@ -128,23 +128,7 @@ public class View extends JPanel {
             
             //Empty the inventory
 
-            //We get all elements in the app
-            Component[] components = this.getComponents();
-            for (Component comp : components) {
-                //We test if these components are JButton, if so we're getting it's associated command word
-                if (comp instanceof JButton) {
-                    JButton butt = (JButton)comp;
-                    Command com = (Command)butt.getClientProperty("command");
-
-                    //if the command word is eat, it means that the button is an eatable item in the inventory
-                    if (com.getCommandWord() == CommandWord.EAT) {
-                        //So we have to remove it to clear the inventory
-                        this.remove(comp);
-                    }
-                }
-            }
-            current_item_in_inv = 0;
-
+            clearInventoryItems();
             //Fill the inventory
 
             Vector<Item> playerItems = game.getPlayerItems();
@@ -175,9 +159,11 @@ public class View extends JPanel {
         }
     }
 
-    private void updateItemsInRoom(){
-
-        //Remove items in room so we can render the new ones
+    /**
+     * Clears items in inventory
+     */
+    private void clearInventoryItems() {
+        //We get all elements in the app
         Component[] components = this.getComponents();
         for (Component comp : components) {
             //We test if these components are JButton, if so we're getting it's associated command word
@@ -186,12 +172,17 @@ public class View extends JPanel {
                 Command com = (Command)butt.getClientProperty("command");
 
                 //if the command word is eat, it means that the button is an eatable item in the inventory
-                if (com.getCommandWord() == CommandWord.TAKE || com.getCommandWord() == CommandWord.GO) {
+                if (com.getCommandWord() == CommandWord.EAT) {
                     //So we have to remove it to clear the inventory
                     this.remove(comp);
                 }
             }
         }
+        current_item_in_inv = 0;
+    }
+
+    private void updateItemsInRoom(){
+        clearItemsInRoom();
         //Because we removed all buttons with a "GO" command, we have to print again directional buttons
         initDirectionalButtons();
         Vector<Item> items = game.getCurrentRoom().getItems();
@@ -207,8 +198,17 @@ public class View extends JPanel {
                 ExitItem exitItem = (ExitItem)item;
                 itemButton.putClientProperty("command", new Command(CommandWord.GO, exitItem.getExit()));
             }
+            else if (item instanceof DammageItem){
+                DammageItem damItem = (DammageItem)item;
+                itemButton.putClientProperty("command", new Command(CommandWord.HIT, damItem.getName()));
+            }
             else {
-                itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
+                if (item.getItemToPick() != null) {
+                    itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getItemToPick().getName()));
+                }
+                else {
+                    itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
+                }
             }
             
             itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, item.getWidth(), item.getHeight());
@@ -216,6 +216,37 @@ public class View extends JPanel {
             itemButton.addMouseListener(pickableControler);
         }
     }
+
+    private void clearItemsInRoom() {
+        //Remove items in room so we can render the new ones
+        Component[] components = this.getComponents();
+        for (Component comp : components) {
+            //We test if these components are JButton, if so we're getting it's associated command word
+            if (comp instanceof JButton) {
+                JButton butt = (JButton)comp;
+                Command com = (Command)butt.getClientProperty("command");
+
+                //if the command word is eat, it means that the button is an eatable item in the inventory
+                if (com.getCommandWord() == CommandWord.TAKE || com.getCommandWord() == CommandWord.GO 
+                || com.getCommandWord() == CommandWord.HIT || com.getCommandWord() == CommandWord.BACK) {
+                    //So we have to remove it to clear the inventory
+                    this.remove(comp);
+                }
+            }
+        }
+    }
+
+    private void removeInventoryFromView(){
+        Component[] components = this.getComponents();
+        for (Component comp : components) {
+            //We test if these components are JButton, if so we're getting it's associated command word
+            if (comp instanceof JLabel) {
+                this.remove(comp);
+            }
+        }
+    }
+
+    
     /**
      * Enables button to be transparent
      * @param button
@@ -249,9 +280,16 @@ public class View extends JPanel {
 
         try {
             int image_offset = 0;
-            Image image = ImageIO.read(getClass().getResource("./images/heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
-            for (int index = 0; index < game.getPlayerLife(); index++) {
-                g.drawImage(image, 350 + image_offset, 520, this);
+            Image heartImage = ImageIO.read(getClass().getResource("./images/heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
+            Image emptyHeartImage = ImageIO.read(getClass().getResource("./images/empty-heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
+
+            for (int index = 0; index < game.getPlayerMaxLife(); index++) {
+                if (index < game.getPlayerLife()) {
+                    g.drawImage(heartImage, 350 + image_offset, 520, this);
+                }
+                else if (game.getPlayerLife() > 0) {
+                    g.drawImage(emptyHeartImage, 350 + image_offset, 520, this);
+                }
                 image_offset += 40;
             }
         } catch (Exception e) {
@@ -264,5 +302,12 @@ public class View extends JPanel {
         repaint();
         updateInventory();
         updateItemsInRoom();
+    }
+
+    public void updateMenu() {
+        repaint();
+        clearInventoryItems();
+        clearItemsInRoom();
+        removeInventoryFromView();
     }
 }

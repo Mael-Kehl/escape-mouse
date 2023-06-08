@@ -4,9 +4,10 @@ public class Item {
     protected String description;
     protected int weight; //weight of the object in grams
     protected String imgPath;
+    //Allows an item to contain a pickable item
+    protected Item itemToPick;
     protected int posX, posY, width, height;
 
-    
     public Item(String name, String description, int weight) {
         this.name = name;
         this.description = description;
@@ -22,6 +23,14 @@ public class Item {
         this.posY = posy;
         this.width = width;
         this.height = height;
+    }
+
+    public void setItemToPick(Item item) {
+        this.itemToPick = item;
+    }
+
+    public Item getItemToPick() {
+        return this.itemToPick;
     }
 
     public void setPos(int posx, int posy) {

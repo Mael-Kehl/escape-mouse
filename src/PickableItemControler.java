@@ -33,12 +33,19 @@ public class PickableItemControler implements MouseInputListener{
         Command currentCommand = new Command(CommandWord.UNKNOWN, "");
 
         if (e.getSource() instanceof JButton) {
-            
             currentCommand = (Command)((JButton)e.getSource()).getClientProperty("command");
         }
 
+        
+
         game.update(positionClick, currentCommand);
-        mainView.update();
+        if (game.getPlayerLife() == 0) {
+            game.goMenu();
+            mainView.updateMenu();
+        }
+        else {
+            mainView.update();
+        }
         //possibility to recognize element with e.geSource().equals(element)
         
     }

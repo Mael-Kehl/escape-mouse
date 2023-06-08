@@ -1,9 +1,12 @@
+import java.nio.file.ProviderNotFoundException;
 import java.util.Vector;
 
 public class Game
 {
     private Parser parser;
     private Player player;
+    private Room attic, livingRoom, cellar, parentalBedRoom, hallRoom, kitchen, garden, menuRoom;
+
         
     /**
      * Create the game and initialise its internal map.
@@ -19,10 +22,12 @@ public class Game
      * Create all the rooms and link their exits together.
      */
     private void createRooms()
-    {
-        Room attic, livingRoom, cellar, parentalBedRoom, hallRoom, kitchen, garden;
-      
+    {      
         // create the rooms
+
+        menuRoom = new Room("Menu of the game");
+        menuRoom.setImgPath("./images/menu-background.png");
+
         cellar = new Room("Cellar of the house");
         cellar.setImgPath("./images/cellar-background.png");
 
@@ -44,6 +49,8 @@ public class Game
         garden = new Room("Garden of the house");
         garden.setImgPath("./images/garden-background.png");
 
+        /** Linking rooms with exits */
+
         cellar.setExits("north", hallRoom);
         cellar.setExits("east", garden);
 
@@ -58,25 +65,38 @@ public class Game
         livingRoom.setExits("west", hallRoom);
 
         parentalBedRoom.setExits("east", attic);
-        parentalBedRoom.setExits("south", livingRoom);
+        parentalBedRoom.setExits("south", hallRoom);
 
         attic.setExits("south", livingRoom);
         attic.setExits("east", garden);
    
 
-        player.setCurrentRoom(cellar);  // start game outside
+        player.setCurrentRoom(cellar);  // start game in cellar
+        fillRooms();
+    }
 
+    /**
+     * Fills rooms with items
+     * Items can be eatable, hit the player or be used as an exit
+     */
+    public void fillRooms(){
         //Creation of all items 
-        Item fridge, cheese1, cheese2;
+        Item fridge, cheese1, cheese2, cheese3, hat;
 
         fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
         cheese1 = new Item("cheese1", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1000, 275);
         cheese2 = new Item("cheese2", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1040, 395);
+        
+        hat = new Item("hat", "This hat is hiding a cheese !", "./images/hat.png",200,101, 57, 500, 395);
+        cheese3 = new Item("cheese3", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 500, 395);
+        hat.setItemToPick(cheese3);
+        hallRoom.addItem(cheese3);
+        hallRoom.addItem(hat);
 
         cellar.addItem(cheese1);
         cellar.addItem(cheese2);
 
-        ExitItem cellarLadder, atticLadder;
+        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs;
 
         cellarLadder = new ExitItem("ladder", "ladder of the cellar", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
         cellar.addItem(cellarLadder);
@@ -84,10 +104,31 @@ public class Game
         atticLadder = new ExitItem("ladder", "ladder of the attic", "./images/attic-ladder.png", 1200, 286, 143, 825, 500, "south");
         attic.addItem(atticLadder);
 
+        cellarMouseDoor = new ExitItem("cellar mouse door", "Door designed for the mouse", "./images/cellar-mouse-door.png", 8000, 86, 110, 1112, 579, "east");
+        cellar.addItem(cellarMouseDoor);
+
+        hallMouseDoor = new ExitItem("hall mouse door", "Door designed for the mouse", "./images/hall-mouse-door.png", 8000, 46, 96, 795, 460, "east");
+        hallRoom.addItem(hallMouseDoor);
+
+        hallStairs = new ExitItem("hall stairs", "Stairs of the hall", "./images/hall-stairs.png", 8000, 517, 720, 733, 0, "north");
+        hallRoom.addItem(hallStairs);
+
+        hallDoor = new ExitItem("Hall door", "Door leading to the kitchen", "./images/hall-door.png", 8000, 96, 426, 61, 107, "west");
+        hallRoom.addItem(hallDoor);
+
+        DammageItem cookies, cleaningProduct, hallMirror;
+
+        cookies = new DammageItem("cookies", "Cookies, but they are poison for mouses", "./images/livingroom-cookies.png", 200, 181, 47, 540, 410, 1);
+        livingRoom.addItem(cookies);
+
+        cleaningProduct = new DammageItem("cleaningProduct", "Product used to clean the toilets", "./images/cellar-cleaning-product.png", 400, 85, 139, 1050,188, 1);
+        cellar.addItem(cleaningProduct);
+
+        hallMirror = new DammageItem("Mirror", "Ouch ! that isn't a window, but a mirror ! Are you a blind mouse ?", "./images/hall-mirror.png", 400, 192, 194, 550,115, 1);
+        hallRoom.addItem(hallMirror);
     }
 
     public void update(int[] position, Command command) {
-        System.out.println("Position : " + position[0] + " " + position[1]);
         processCommand(command);
     }
 
@@ -167,6 +208,9 @@ public class Game
                 break;
             case INSPECT: 
                 inspectItem(command);
+                break;
+            case HIT: 
+                hitPlayer(command);
                 break;
         }
 
@@ -279,12 +323,22 @@ public class Game
         }
     }
 
+    public void goMenu(){
+        Room currentRoom = player.getCurrentRoom();
+        player.addPreviousRoom(currentRoom);
+        player.setCurrentRoom(menuRoom);
+    }
+
     public Room getCurrentRoom() {
         return player.getCurrentRoom();
     }
 
     public int getPlayerLife(){
         return player.getLifePoints();
+    }
+
+    public int getPlayerMaxLife() {
+        return player.getMaxLifePoints();
     }
 
     /**
@@ -331,6 +385,10 @@ public class Game
     private void eat(Command command) {
         player.addLifePoint();
         dropItem(command);
+    }
+
+    private void hitPlayer(Command command){
+        player.removeLifePoint();
     }
 
     private void printLocationInfo(){
