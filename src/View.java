@@ -24,6 +24,9 @@ public class View extends JPanel {
     final int[] ITEMS_Y_POS = {575, 605, 585, 575, 605};
     int current_item_in_inv = 0;
 
+    //Variable that allows us knowing if we are in the menu
+    boolean isInMenu = false;
+
     Image backgroundImage;
     
     public View(Game game){
@@ -60,7 +63,7 @@ public class View extends JPanel {
         //Adding the command associated to the button in its properties
         //So the controler is able to read the command and update the model(game)
         northButton.putClientProperty("command", new Command(CommandWord.GO, "north"));
-        this.add(northButton);
+        this.add(northButton, 10, 0);
         //PLacing the element
         northButton.setBounds(60 + insets.left, 5 + insets.top, 32,32);
         enableButtonTransparency(northButton);
@@ -69,7 +72,7 @@ public class View extends JPanel {
 
         southButton = new JButton(icon);
         southButton.putClientProperty("command", new Command(CommandWord.GO, "south"));
-        this.add(southButton);
+        this.add(southButton, 10, 0);
         southButton.setBounds(60 + insets.left, 69 + insets.top, 32, 32);
         enableButtonTransparency(southButton);
 
@@ -77,13 +80,13 @@ public class View extends JPanel {
 
         westButton = new JButton(icon);
         westButton.putClientProperty("command", new Command(CommandWord.GO, "west"));
-        this.add(westButton);
+        this.add(westButton, 10, 0);
         westButton.setBounds(28 + insets.left, 37 + insets.top, 32, 32);
         enableButtonTransparency(westButton);
 
         backButton = new JButton(icon);
         backButton.putClientProperty("command", new Command(CommandWord.BACK, null));
-        this.add(backButton);
+        this.add(backButton, 10, 0);
         backButton.setBounds(60 + insets.left, 101 + insets.top, 32, 32);
         enableButtonTransparency(backButton);
 
@@ -91,7 +94,7 @@ public class View extends JPanel {
 
         eastButton = new JButton(icon);
         eastButton.putClientProperty("command", new Command(CommandWord.GO, "east"));
-        this.add(eastButton);
+        this.add(eastButton, 10, 0);
         eastButton.setBounds(92 + insets.left, 37 + insets.top, 32, 32);
         enableButtonTransparency(eastButton);
 
@@ -184,7 +187,7 @@ public class View extends JPanel {
     private void updateItemsInRoom(){
         clearItemsInRoom();
         //Because we removed all buttons with a "GO" command, we have to print again directional buttons
-        initDirectionalButtons();
+        // initDirectionalButtons();
         Vector<Item> items = game.getCurrentRoom().getItems();
 
         for (Item item : items) {
@@ -276,8 +279,12 @@ public class View extends JPanel {
         //Drawing the background image
         g.drawImage(backgroundImage, 0, 0, this);
 
-        /** --------- Draw life points --------- */
+        /* Drawing hearts in scene */
+        if (!isInMenu) paintHearts(g);
+    }
 
+    public void paintHearts(Graphics g){
+        super.paintComponents(g);
         try {
             int image_offset = 0;
             Image heartImage = ImageIO.read(getClass().getResource("./images/heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
@@ -287,7 +294,7 @@ public class View extends JPanel {
                 if (index < game.getPlayerLife()) {
                     g.drawImage(heartImage, 350 + image_offset, 520, this);
                 }
-                else if (game.getPlayerLife() > 0) {
+                else {
                     g.drawImage(emptyHeartImage, 350 + image_offset, 520, this);
                 }
                 image_offset += 40;
@@ -295,19 +302,23 @@ public class View extends JPanel {
         } catch (Exception e) {
             System.out.println("Error happened drawing life points on screen : " + e.getMessage());
         }
-
     }
 
     public void update() {
+        isInMenu = false;
         repaint();
+        initInventory();
         updateInventory();
         updateItemsInRoom();
+        initDirectionalButtons();
     }
 
     public void updateMenu() {
+        isInMenu = true;
         repaint();
         clearInventoryItems();
         clearItemsInRoom();
         removeInventoryFromView();
+        updateItemsInRoom();        
     }
 }

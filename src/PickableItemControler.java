@@ -41,6 +41,7 @@ public class PickableItemControler implements MouseInputListener{
         game.update(positionClick, currentCommand);
         if (game.getPlayerLife() == 0) {
             game.goMenu();
+            game.resetGame();
             mainView.updateMenu();
         }
         else {

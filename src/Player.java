@@ -84,6 +84,10 @@ public class Player {
         return this.items;
     }
 
+    public void emptyItems(){
+        this.items.clear();
+    }
+
     /**
      * Returns room where the player is currently
      * @return Room

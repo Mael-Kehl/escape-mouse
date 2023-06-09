@@ -38,7 +38,7 @@ public class Controler implements MouseInputListener{
         // }
 
         game.update(positionClick, currentCommand);
-        mainView.update();
+        // mainView.update();
         //possibility to recognize element with e.geSource().equals(element)
         
     }

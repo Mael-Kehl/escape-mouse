@@ -51,6 +51,8 @@ public class Game
 
         /** Linking rooms with exits */
 
+        menuRoom.setExits("north", cellar);
+
         cellar.setExits("north", hallRoom);
         cellar.setExits("east", garden);
 
@@ -96,7 +98,10 @@ public class Game
         cellar.addItem(cheese1);
         cellar.addItem(cheese2);
 
-        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs;
+        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs, startButton;
+
+        startButton = new ExitItem("start button", "start button of the menu", "./images/menu-start-button.png", 1200, 368, 128, 456, 400, "north");
+        menuRoom.addItem(startButton);
 
         cellarLadder = new ExitItem("ladder", "ladder of the cellar", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
         cellar.addItem(cellarLadder);
@@ -130,6 +135,14 @@ public class Game
 
     public void update(int[] position, Command command) {
         processCommand(command);
+    }
+
+    public void resetGame(){
+        this.player.setLifePoints(1);
+        this.player.emptyItems();
+        Item cheese = new Item("cheese", "Piece of cheese", 10 );
+        cheese.setImgPath("./images/cheese-item.png");
+        this.player.pickUpItem(cheese);
     }
 
     /**
