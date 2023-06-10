@@ -83,59 +83,95 @@ public class Game
      */
     public void fillRooms(){
         //Creation of all items 
-        Item fridge, cheese1, cheese2, cheese3, hat, hallConvenient;
+        Item fridge, cheese1, cheese2, cheese3, cheese4, cheese5, hat, hallConvenient, bedroomConvenient, bedroomClock, flatware;
 
-        fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
-        cheese1 = new Item("cheese1", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1000, 275);
-        cheese2 = new Item("cheese2", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1040, 395);
+        //Description are used to show an information dialog to the user, 
+        //we let them empty if we don't want to show a message
+
         
+        cheese1 = new Item("cheese1", "", "./images/cheese-item.png",200,64, 64, 1000, 275);
+        cheese2 = new Item("cheese2", "", "./images/cheese-item.png",200,64, 64, 1040, 395);
+        
+        cellar.addItem(cheese1);
+        cellar.addItem(cheese2);
+
         //Cheese is hidden by hat
-        hat = new Item("hat", "This hat is hiding a cheese !", "./images/hat.png",200,101, 57, 282, 346);
-        cheese3 = new Item("cheese3", "Piece of cheese that you can eat to heal", 200);
+        hat = new Item("hat", "This hat was hiding a cheese ! Try to click on other objects to earn food !", "./images/hat.png",200,101, 57, 282, 346);
+        cheese3 = new Item("cheese3", "", 200);
         cheese3.setImgPath("./images/cheese-item.png");
         hat.setItemToPick(cheese3);
         hallRoom.addItem(cheese3);
         hallRoom.addItem(hat);
 
-        hallConvenient = new Item("hallConvenient", "Convenient in the hall !", "./images/hall-convenient.png",200,204, 151, 568, 336);
+        hallConvenient = new Item("hallConvenient", "", "./images/hall-convenient.png",2000,204, 151, 568, 336);
+        cheese4 = new Item("cheese4", "", 200);
+        cheese4.setImgPath("./images/cheese-item.png");
+        hallConvenient.setItemToPick(cheese4);
+        hallRoom.addItem(cheese4);
         hallRoom.addItem(hallConvenient);
 
-        cellar.addItem(cheese1);
-        cellar.addItem(cheese2);
+        bedroomConvenient = new Item("bedroomConvenient", "", "./images/bedroom-convenient.png",2000,166, 108, 950, 415);
+        parentalBedRoom.addItem(bedroomConvenient);
 
-        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs, startButton;
+        bedroomClock = new Item("bedRoomclock", "You should check the post-it in the kitchen, you might find something in there", "./images/bedroom-clock.png", 2000, 114, 240, 220, 300);
+        parentalBedRoom.addItem(bedroomClock);
 
-        startButton = new ExitItem("start button", "start button of the menu", "./images/menu-start-button.png", 1200, 368, 128, 456, 400, "north");
+        fridge = new Item("fridge", "The fridge was containing a cheese, congratulations captain obvious !","./images/kitchen-fridge.png", 25000, 181, 495, 60, 137);
+        cheese5 = new Item("cheese5", "",200);
+        cheese5.setImgPath("./images/cheese-item.png");
+        fridge.setItemToPick(cheese5);
+        kitchen.addItem(cheese5);
+        kitchen.addItem(fridge);
+
+        flatware = new Item("Flatware", "You are not ratatouille, We don't have time for this !", "./images/kitchen-flatware.png", 2500, 165,110,770,249);
+        kitchen.addItem(flatware);
+
+
+        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs, startButton, livingroomStairs, livingroomMouseDoor;
+
+        startButton = new ExitItem("start button", "", "./images/menu-start-button.png", 1200, 368, 128, 456, 400, "north");
         menuRoom.addItem(startButton);
 
-        cellarLadder = new ExitItem("ladder", "ladder of the cellar", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
+        cellarLadder = new ExitItem("ladder", "", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
         cellar.addItem(cellarLadder);
 
-        atticLadder = new ExitItem("ladder", "ladder of the attic", "./images/attic-ladder.png", 1200, 286, 143, 825, 500, "south");
+        atticLadder = new ExitItem("ladder", "", "./images/attic-ladder.png", 1200, 286, 143, 825, 500, "south");
         attic.addItem(atticLadder);
 
-        cellarMouseDoor = new ExitItem("cellar mouse door", "Door designed for the mouse", "./images/cellar-mouse-door.png", 8000, 86, 110, 1112, 579, "east");
+        cellarMouseDoor = new ExitItem("cellar mouse door", "This door is locked ! You have to find a key to go through it !", "./images/cellar-mouse-door.png", 8000, 86, 110, 1112, 579, "east");
         cellar.addItem(cellarMouseDoor);
 
-        hallMouseDoor = new ExitItem("hall mouse door", "Door designed for the mouse", "./images/hall-mouse-door.png", 8000, 46, 96, 795, 460, "east");
+        hallMouseDoor = new ExitItem("hall mouse door", "", "./images/hall-mouse-door.png", 8000, 46, 96, 795, 460, "east");
         hallRoom.addItem(hallMouseDoor);
 
-        hallStairs = new ExitItem("hall stairs", "Stairs of the hall", "./images/hall-stairs.png", 8000, 517, 720, 733, 0, "north");
+        hallStairs = new ExitItem("hall stairs", "", "./images/hall-stairs.png", 8000, 517, 720, 733, 0, "north");
         hallRoom.addItem(hallStairs);
 
-        hallDoor = new ExitItem("Hall door", "Door leading to the kitchen", "./images/hall-door.png", 8000, 96, 426, 61, 107, "west");
+        hallDoor = new ExitItem("Hall door", "", "./images/hall-door.png", 8000, 96, 426, 61, 107, "west");
         hallRoom.addItem(hallDoor);
 
-        DammageItem cookies, cleaningProduct, hallMirror;
+        livingroomStairs = new ExitItem("LivingRoom Stairs", "", "./images/livingroom-stairs.png", 2000, 774, 402, 500, 0, "north");
+        livingRoom.addItem(livingroomStairs);
 
-        cookies = new DammageItem("cookies", "Cookies, but they are poison for mouses", "./images/livingroom-cookies.png", 200, 181, 47, 540, 410, 1);
+        livingroomMouseDoor = new ExitItem("LivingRoom mouse door", "", "./images/livingroom-mouse-door.png", 2000, 71, 78, 5, 270, "west");
+        livingRoom.addItem(livingroomMouseDoor);
+
+        DammageItem cookies, cleaningProduct, hallMirror, pressureCooker, kitchenWindow;
+
+        cookies = new DammageItem("cookies", "You've been hit by the cookies, it acts like poison for mouses !", "./images/livingroom-cookies.png", 200, 181, 47, 540, 410, 1);
         livingRoom.addItem(cookies);
 
-        cleaningProduct = new DammageItem("cleaningProduct", "Product used to clean the toilets", "./images/cellar-cleaning-product.png", 400, 85, 139, 1050,188, 1);
+        cleaningProduct = new DammageItem("cleaningProduct", "Don't try to drink cleaning product, are you mad ?", "./images/cellar-cleaning-product.png", 400, 85, 139, 1050,188, 1);
         cellar.addItem(cleaningProduct);
 
         hallMirror = new DammageItem("Mirror", "Ouch ! that isn't a window, but a mirror ! Are you a blind mouse ?", "./images/hall-mirror.png", 400, 192, 194, 550,115, 1);
         hallRoom.addItem(hallMirror);
+
+        pressureCooker = new DammageItem("Pressure cooker", "Ouch ! that's hot", "./images/kitchen-pressure-cooker.png", 2000, 65,52,380,330, 1 );
+        kitchen.addItem(pressureCooker);
+
+        kitchenWindow = new DammageItem("Kitchen window", "Haven't you seen that the window was close ? You're a mouse not a dumb bird !", "./images/kitchen-window.png", 2500, 287, 312, 965, 80, 1);
+        kitchen.addItem(kitchenWindow);
     }
 
     public void update(int[] position, Command command) {
