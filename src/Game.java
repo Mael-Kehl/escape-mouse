@@ -83,17 +83,22 @@ public class Game
      */
     public void fillRooms(){
         //Creation of all items 
-        Item fridge, cheese1, cheese2, cheese3, hat;
+        Item fridge, cheese1, cheese2, cheese3, hat, hallConvenient;
 
         fridge = new Item("fridge", "Fridge containing a lot of cheese", 25000);
         cheese1 = new Item("cheese1", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1000, 275);
         cheese2 = new Item("cheese2", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 1040, 395);
         
-        hat = new Item("hat", "This hat is hiding a cheese !", "./images/hat.png",200,101, 57, 500, 395);
-        cheese3 = new Item("cheese3", "Piece of cheese that you can eat to heal", "./images/cheese-item.png",200,64, 64, 500, 395);
+        //Cheese is hidden by hat
+        hat = new Item("hat", "This hat is hiding a cheese !", "./images/hat.png",200,101, 57, 282, 346);
+        cheese3 = new Item("cheese3", "Piece of cheese that you can eat to heal", 200);
+        cheese3.setImgPath("./images/cheese-item.png");
         hat.setItemToPick(cheese3);
         hallRoom.addItem(cheese3);
         hallRoom.addItem(hat);
+
+        hallConvenient = new Item("hallConvenient", "Convenient in the hall !", "./images/hall-convenient.png",200,204, 151, 568, 336);
+        hallRoom.addItem(hallConvenient);
 
         cellar.addItem(cheese1);
         cellar.addItem(cheese2);

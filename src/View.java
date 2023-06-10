@@ -206,6 +206,7 @@ public class View extends JPanel {
                 itemButton.putClientProperty("command", new Command(CommandWord.HIT, damItem.getName()));
             }
             else {
+                //If the item is hidding another one, we pick the hidden item
                 if (item.getItemToPick() != null) {
                     itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getItemToPick().getName()));
                 }
@@ -213,10 +214,17 @@ public class View extends JPanel {
                     itemButton.putClientProperty("command", new Command(CommandWord.TAKE, item.getName()));
                 }
             }
+            itemButton.putClientProperty("item", item);
             
-            itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, item.getWidth(), item.getHeight());
-            this.add(itemButton);
-            itemButton.addMouseListener(pickableControler);
+            //Some items are pickable when another one is clicked (like hidden cheese under a hat for instance)
+            //So we check is the values height, width, posx and posy are set to -1, if so it means we don't
+            //Want this item to be placed on scene
+            if (item.getHeight() != -1) {
+                itemButton.setBounds(item.getPosX() + insets.left, item.getPosY() + insets.top, item.getWidth(), item.getHeight());
+                this.add(itemButton);
+                itemButton.addMouseListener(pickableControler);
+            }
+            
         }
     }
 
@@ -302,6 +310,10 @@ public class View extends JPanel {
         } catch (Exception e) {
             System.out.println("Error happened drawing life points on screen : " + e.getMessage());
         }
+    }
+
+    public void showInformationDialog(String desc) {
+        JOptionPane.showMessageDialog(this, desc);
     }
 
     public void update() {

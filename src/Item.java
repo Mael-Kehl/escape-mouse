@@ -6,7 +6,7 @@ public class Item {
     protected String imgPath;
     //Allows an item to contain a pickable item
     protected Item itemToPick;
-    protected int posX, posY, width, height;
+    protected int posX = -1, posY = -1, width = -1, height = -1;
 
     public Item(String name, String description, int weight) {
         this.name = name;

@@ -31,9 +31,12 @@ public class PickableItemControler implements MouseInputListener{
     public void mousePressed(MouseEvent e) {
         int[] positionClick = {(int)Math.floor(e.getX()) ,(int)Math.floor(e.getY())};
         Command currentCommand = new Command(CommandWord.UNKNOWN, "");
+        Item item = new Item("", "", 0);
 
         if (e.getSource() instanceof JButton) {
             currentCommand = (Command)((JButton)e.getSource()).getClientProperty("command");
+            item = (Item)((JButton)e.getSource()).getClientProperty("item");
+
         }
 
         
@@ -46,6 +49,9 @@ public class PickableItemControler implements MouseInputListener{
         }
         else {
             mainView.update();
+            if (!item.getDescription().isEmpty()) {
+                mainView.showInformationDialog(item.getDescription());
+            }
         }
         //possibility to recognize element with e.geSource().equals(element)
         
