@@ -25,7 +25,7 @@ public class View extends JPanel {
     int current_item_in_inv = 0;
 
     //Variable that allows us knowing if we are in the menu
-    boolean isInMenu = false;
+    boolean isInMenu = true;
 
     Image backgroundImage;
     
@@ -45,8 +45,6 @@ public class View extends JPanel {
         dirControler = new DirectionButtonsControler(game, this);
         invControler = new InventoryControler(game, this);
         pickableControler = new PickableItemControler(game, this);
-        initDirectionalButtons();
-        initInventory();
         updateItemsInRoom();
     }
 

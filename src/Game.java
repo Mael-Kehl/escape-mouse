@@ -73,7 +73,7 @@ public class Game
         attic.setExits("east", garden);
    
 
-        player.setCurrentRoom(cellar);  // start game in cellar
+        player.setCurrentRoom(menuRoom);  // start game in cellar
         fillRooms();
     }
 
@@ -83,12 +83,17 @@ public class Game
      */
     public void fillRooms(){
         //Creation of all items 
-        Item fridge, cheese1, cheese2, cheese3, cheese4, cheese5, hat, hallConvenient, bedroomConvenient, bedroomClock, flatware;
+        Item messageButton, fridge, cheese1, cheese2, cheese3, cheese4, cheese5, hat, hallConvenient, hallClock, bedroomConvenient, bedroomClock, flatware, postIt1, postIt2, postIt3, endOfGameMessage;
 
         //Description are used to show an information dialog to the user, 
         //we let them empty if we don't want to show a message
 
-        
+        messageButton = new Item("messageButton", "", "./images/message-button.png", 2000, 522, 225, 380, 250);
+        menuRoom.addItem(messageButton);
+
+        endOfGameMessage = new Item("endMessage", "", "./images/end-message-button.png", 2000, 522, 93, 380, 350);
+        garden.addItem(endOfGameMessage);
+
         cheese1 = new Item("cheese1", "", "./images/cheese-item.png",200,64, 64, 1000, 275);
         cheese2 = new Item("cheese2", "", "./images/cheese-item.png",200,64, 64, 1040, 395);
         
@@ -110,10 +115,13 @@ public class Game
         hallRoom.addItem(cheese4);
         hallRoom.addItem(hallConvenient);
 
-        bedroomConvenient = new Item("bedroomConvenient", "", "./images/bedroom-convenient.png",2000,166, 108, 950, 415);
+        hallClock = new Item("hallClock", "The time isn't correct on this clock, try to find another one", "./images/hall-clock.png", 2000, 63, 84, 195, 110 );
+        hallRoom.addItem(hallClock);
+
+        bedroomConvenient = new Item("bedroomConvenient", "", "./images/bedroom-convenient.png",2000,213, 139, 914, 400);
         parentalBedRoom.addItem(bedroomConvenient);
 
-        bedroomClock = new Item("bedRoomclock", "You should check the post-it in the kitchen, you might find something in there", "./images/bedroom-clock.png", 2000, 114, 240, 220, 300);
+        bedroomClock = new Item("bedRoomclock", "You should check the post-it in the kitchen, you might find something in there", "./images/bedroom-clock.png", 2000, 185, 318, 248, 178);
         parentalBedRoom.addItem(bedroomClock);
 
         fridge = new Item("fridge", "The fridge was containing a cheese, congratulations captain obvious !","./images/kitchen-fridge.png", 25000, 181, 495, 60, 137);
@@ -123,13 +131,22 @@ public class Game
         kitchen.addItem(cheese5);
         kitchen.addItem(fridge);
 
+        postIt1 = new Item("postIt1", "The parents are hiding the key in their room, search in the convenients !", "./images/post-it2.png", 2000, 38, 44, 340, 250);
+        postIt2 = new Item("postIt2", "300cl of milk + 2 eggs + 400g of butter", "./images/post-it3.png", 2000, 38, 44, 390, 250);
+        postIt3 = new Item("postIt3", "There is another to get outside, in the attic ...", "./images/post-it1.png", 2000, 38, 44, 440, 250);
+
+
+        kitchen.addItem(postIt1);
+        kitchen.addItem(postIt2);
+        kitchen.addItem(postIt3);
+
         flatware = new Item("Flatware", "You are not ratatouille, We don't have time for this !", "./images/kitchen-flatware.png", 2500, 165,110,770,249);
         kitchen.addItem(flatware);
 
 
-        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs, startButton, livingroomStairs, livingroomMouseDoor;
+        ExitItem cellarLadder, atticLadder, cellarMouseDoor, hallMouseDoor, hallDoor, hallStairs, startButton, livingroomStairs, livingroomMouseDoor, atticTube;
 
-        startButton = new ExitItem("start button", "", "./images/menu-start-button.png", 1200, 368, 128, 456, 400, "north");
+        startButton = new ExitItem("start button", "", "./images/menu-start-button.png", 1200, 368, 128, 456, 500, "north");
         menuRoom.addItem(startButton);
 
         cellarLadder = new ExitItem("ladder", "", "./images/cellar-ladder.png", 1200, 392, 464, 0, 60, "north");
@@ -138,7 +155,7 @@ public class Game
         atticLadder = new ExitItem("ladder", "", "./images/attic-ladder.png", 1200, 286, 143, 825, 500, "south");
         attic.addItem(atticLadder);
 
-        cellarMouseDoor = new ExitItem("cellar mouse door", "This door is locked ! You have to find a key to go through it !", "./images/cellar-mouse-door.png", 8000, 86, 110, 1112, 579, "east");
+        cellarMouseDoor = new ExitItem("cellar mouse door", "This door is locked ! You might check the clocks first !", "./images/cellar-mouse-door.png", 8000, 86, 110, 1112, 579, "");
         cellar.addItem(cellarMouseDoor);
 
         hallMouseDoor = new ExitItem("hall mouse door", "", "./images/hall-mouse-door.png", 8000, 46, 96, 795, 460, "east");
@@ -155,6 +172,9 @@ public class Game
 
         livingroomMouseDoor = new ExitItem("LivingRoom mouse door", "", "./images/livingroom-mouse-door.png", 2000, 71, 78, 5, 270, "west");
         livingRoom.addItem(livingroomMouseDoor);
+
+        atticTube = new ExitItem("Attic tube", "", "./images/attic-tube.png", 2000, 251, 153, 770, 252, "east");
+        attic.addItem(atticTube);
 
         DammageItem cookies, cleaningProduct, hallMirror, pressureCooker, kitchenWindow;
 
