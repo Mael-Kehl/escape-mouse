@@ -28,7 +28,7 @@ public class CommandWords
                 validCommands.put(command.toString().toLowerCase(), command);
             }
         }
-        System.out.println(validCommands);
+        //System.out.println(validCommands);
     }
 
     /**

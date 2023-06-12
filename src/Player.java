@@ -1,16 +1,29 @@
 import java.util.Stack;
 import java.util.Vector;
 
+/**
+ * Class for the player of the game
+ * A player is able to store items in his bag, under 1000 grams
+ * A player also knows which rooms he has visited and in which room he is currently
+ * Finally a player has health points
+ */
 public class Player {
     private Room currentRoom;
     private Stack<Room> previousRooms;
     private Vector<Item> items;
     private int currentWeight = 0; //current weight carried by the player
     private int maxWeight = 1000; //Maximum weight the player can carry in grams
+    private final int MAX_ITEMS_NUMBER = 5;
+    private int life_points = 1;
+    private final int MAX_LIFE_POINTS = 4;
 
     public Player(){
         previousRooms = new Stack<Room>();
         items = new Vector<Item>();
+        Item cheese = new Item("cheese", "Piece of cheese", 10 );
+        cheese.setImgPath("./images/cheese-item.png");
+        items.add(cheese);
+        
     }
 
     /**
@@ -18,7 +31,7 @@ public class Player {
      * @param item Item to pick
      */
     public void pickUpItem(Item item){
-        if (currentWeight < maxWeight && item.getWeight() <= maxWeight) {
+        if (currentWeight < maxWeight && item.getWeight() <= maxWeight && items.size() < MAX_ITEMS_NUMBER) {
             this.items.add(item);
             this.currentWeight += item.getWeight();
             //If we pick an item, it is no more in the room, so we remove it from the room items list
@@ -37,7 +50,6 @@ public class Player {
         if (!items.isEmpty()) {
             items.remove(item);
             // If we drop an item, it is in the room 
-            this.currentRoom.addItem(item);
         }
     }
 
@@ -59,13 +71,21 @@ public class Player {
      * Returns a list of all items carried by player
      * @return String of items
      */
-    public String getItemsCarried() {
+    public String getItemsCarriedString() {
         String itemList = "";
 
         for (Item item: items){
             itemList += item.getName() + " ";
         }
         return itemList;
+    }
+
+    public Vector<Item> getItemsCarried() {
+        return this.items;
+    }
+
+    public void emptyItems(){
+        this.items.clear();
     }
 
     /**
@@ -116,6 +136,25 @@ public class Player {
         return this.previousRooms;
     }
 
+    public int getLifePoints() {
+        return life_points;
+    }
+
+    public void setLifePoints(int life_points) {
+        this.life_points = life_points;
+    }
+
+    public void addLifePoint(){
+        if (life_points < MAX_LIFE_POINTS) life_points++;
+    }
+
+    public void removeLifePoint(){
+        if (life_points>0) life_points--;
+    }
+
+    public int getMaxLifePoints() {
+        return this.MAX_LIFE_POINTS;
+    }
 
 
 }
