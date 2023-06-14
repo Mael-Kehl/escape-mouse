@@ -40,7 +40,6 @@ public class DirectionButtonsControler implements MouseInputListener{
         game.update(positionClick, currentCommand);
         mainView.update();
         //possibility to recognize element with e.geSource().equals(element)
-        
     }
 
     @Override
