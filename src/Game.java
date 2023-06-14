@@ -133,7 +133,7 @@ public class Game
 
         postIt1 = new Item("postIt1", "The parents are hiding the key in their room, search in the convenients !", "./images/post-it2.png", 2000, 38, 44, 340, 250);
         postIt2 = new Item("postIt2", "300cl of milk + 2 eggs + 400g of butter", "./images/post-it3.png", 2000, 38, 44, 390, 250);
-        postIt3 = new Item("postIt3", "There is another to get outside, in the attic ...", "./images/post-it1.png", 2000, 38, 44, 440, 250);
+        postIt3 = new Item("postIt3", "There is another way to get outside, in the attic ...", "./images/post-it1.png", 2000, 38, 44, 440, 250);
 
 
         kitchen.addItem(postIt1);
@@ -198,6 +198,11 @@ public class Game
         processCommand(command);
     }
 
+    /** 
+     * Resets game by setting life points to 1
+     * Empty the inventory of the player
+     * Add a cheese to player's inventory
+     */
     public void resetGame(){
         this.player.setLifePoints(1);
         this.player.emptyItems();
@@ -345,6 +350,9 @@ public class Game
         }
     }
 
+    /*
+    * Drops an item base on its name 
+    */
     private void dropItem(Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know what item we should drop
@@ -397,11 +405,15 @@ public class Game
         }
     }
 
+    /**
+     * Brings the player to menu
+     */
     public void goMenu(){
         Room currentRoom = player.getCurrentRoom();
         player.addPreviousRoom(currentRoom);
         player.setCurrentRoom(menuRoom);
     }
+
 
     public Room getCurrentRoom() {
         return player.getCurrentRoom();
@@ -437,10 +449,12 @@ public class Game
 
     /**
      * Try to look around current room to give informations
+     * Not used in the final game
      */
     private void look() {
         System.out.println(player.getCurrentRoom().getLongDescription());
     }
+
 
     private void showRoomItems() {
         System.out.print("Items : ");
@@ -456,11 +470,19 @@ public class Game
         return player.getItemsCarried();
     }
 
+    /**
+     * Eats an element in the inventory
+     * @param command
+     */
     private void eat(Command command) {
         player.addLifePoint();
         dropItem(command);
     }
 
+    /**
+     * Harms the player while removing one life point
+     * @param command
+     */
     private void hitPlayer(Command command){
         player.removeLifePoint();
     }

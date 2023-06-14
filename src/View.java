@@ -293,14 +293,18 @@ public class View extends JPanel {
         super.paintComponents(g);
         try {
             int image_offset = 0;
+            //Get the images of filled and empty heart
             Image heartImage = ImageIO.read(getClass().getResource("./images/heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
             Image emptyHeartImage = ImageIO.read(getClass().getResource("./images/empty-heart.png")).getScaledInstance(32, 32, Image.SCALE_DEFAULT);
 
+            
             for (int index = 0; index < game.getPlayerMaxLife(); index++) {
+                //drawing hearts on scene based on players life points
                 if (index < game.getPlayerLife()) {
                     g.drawImage(heartImage, 350 + image_offset, 520, this);
                 }
                 else {
+                    //Drawing the rest of hearts empty 
                     g.drawImage(emptyHeartImage, 350 + image_offset, 520, this);
                 }
                 image_offset += 40;

@@ -30,30 +30,34 @@ public class PickableItemControler implements MouseInputListener{
     @Override
     public void mousePressed(MouseEvent e) {
         int[] positionClick = {(int)Math.floor(e.getX()) ,(int)Math.floor(e.getY())};
+
         Command currentCommand = new Command(CommandWord.UNKNOWN, "");
         Item item = new Item("", "", 0);
 
+        //If the source is a button, we recover its command associated in client properties
         if (e.getSource() instanceof JButton) {
             currentCommand = (Command)((JButton)e.getSource()).getClientProperty("command");
+            //Then we recover the item clicked
             item = (Item)((JButton)e.getSource()).getClientProperty("item");
 
         }
 
-        
-
+        //We update the model
         game.update(positionClick, currentCommand);
+
+        //IF the player has no life, we go back to menu
         if (game.getPlayerLife() == 0) {
             game.goMenu();
             game.resetGame();
             mainView.updateMenu();
         }
         else {
+            //else we search for a description in the item to print it as an information message
             mainView.update();
             if (!item.getDescription().isEmpty()) {
                 mainView.showInformationDialog(item.getDescription());
             }
         }
-        //possibility to recognize element with e.geSource().equals(element)
         
     }
 
